@@ -1,6 +1,9 @@
 package com.example.proyectotareas;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTareas;
+    private Button buttonAgregar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +34,24 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+
         recyclerTareas = findViewById(R.id.recyclerTareas);
+        buttonAgregar = findViewById(R.id.buttonAñadir);
+
         recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
 
         List<agregarTareaModel> listaTareas = new ArrayList<>();
 
         tareaAdapter adapter = new tareaAdapter(listaTareas);
         recyclerTareas.setAdapter(adapter);
+
+        buttonAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AgregarTareaActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }
