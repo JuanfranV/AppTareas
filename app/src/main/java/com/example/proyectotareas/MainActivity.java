@@ -1,11 +1,15 @@
 package com.example.proyectotareas;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,6 +27,31 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTareas;
     private Button buttonAgregar;
+    List<agregarTareaModel> listaTareas = new ArrayList<>();
+    tareaAdapter adapter = new tareaAdapter(listaTareas);
+
+    private final ActivityResultLauncher<Intent> agregarTareaLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        Log.d("MainActivity", "Resultado recibido: resultCode=" + result.getResultCode());
+                        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            String titulo = data.getStringExtra("titulo");
+                            String descripcion = data.getStringExtra("descripcion");
+                            String estado = data.getStringExtra("estado");
+                            Log.d("MainActivity", "Datos: T=" + titulo + ", D=" + descripcion + ", E=" + estado);
+
+                            if (titulo != null && descripcion != null && estado != null) {
+                                listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
+                                Log.d("MainActivity", "Tarea añadida. Nuevo tamaño lista: " + listaTareas.size());
+                                adapter.notifyItemInserted(listaTareas.size() - 1);
+                                recyclerTareas.scrollToPosition(listaTareas.size() - 1);
+                            } else {
+                                Log.e("MainActivity", "Alguno de los datos recibidos es nulo.");
+                            }
+                        }
+                    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
 
-        List<agregarTareaModel> listaTareas = new ArrayList<>();
-
-        tareaAdapter adapter = new tareaAdapter(listaTareas);
+        listaTareas = new ArrayList<>();
+        adapter = new tareaAdapter(listaTareas);
         recyclerTareas.setAdapter(adapter);
 
         buttonAgregar.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AgregarTareaActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }

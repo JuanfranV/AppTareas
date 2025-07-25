@@ -74,13 +74,13 @@
             android:text="Descripcion:"
             android:textColor="@color/white"
             android:textSize="40sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextText2"
+            app:layout_constraintBottom_toTopOf="@+id/edTeDescripcion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.102"
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextText2"
+            android:id="@+id/edTeDescripcion"
             android:layout_width="328dp"
             android:layout_height="117dp"
             android:background="@color/cardview_shadow_start_color"
@@ -144,12 +144,12 @@
             android:text="Guardar"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button2"
+            app:layout_constraintEnd_toStartOf="@+id/buttonCancelar"
             app:layout_constraintHorizontal_bias="0.214"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonCancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"

@@ -14,7 +14,7 @@ import com.example.proyectotareas.model.agregarTareaModel;
 import java.util.List;
 
 public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> {
-    private List<agregarTareaModel> listaTareas;
+    private static List<agregarTareaModel> listaTareas;
 
     public tareaAdapter(List<agregarTareaModel> listaTareas){
         this.listaTareas = listaTareas;
@@ -43,11 +43,11 @@ public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> 
         agregarTareaModel agregarTareaModel = listaTareas.get(position);
         holder.teViNombre.setText("Nombre: " + agregarTareaModel.getNombre());
         holder.teVidescripcion.setText("Descripción: " + agregarTareaModel.getDescripcion());
-        holder.teViEstado.setText("Descripción: " + agregarTareaModel.getCompletadoPendiente());
+        holder.teViEstado.setText("estado: " + agregarTareaModel.getCompletadoPendiente());
     }
 
     @Override
     public int getItemCount(){
-        return listaTareas.size();
+        return listaTareas == null ? 0 : listaTareas.size();
     }
 }
