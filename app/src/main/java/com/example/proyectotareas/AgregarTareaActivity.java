@@ -1,6 +1,5 @@
 package com.example.proyectotareas;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -50,11 +49,11 @@ public class AgregarTareaActivity extends AppCompatActivity {
                 String descripcion = edTeDescripcion.getText().toString();
                 String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiante.isChecked() ? "Pendiente" : "Ninguno";
 
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("titulo", titulo);
-                resultIntent.putExtra("descripcion", descripcion);
-                resultIntent.putExtra("estado", estado);
-                setResult(Activity.RESULT_OK, resultIntent);
+                Intent intent = new Intent(AgregarTareaActivity.this, MainActivity.class);
+                intent.putExtra("titulo", titulo);
+                intent.putExtra("descripcion", descripcion);
+                intent.putExtra("estado", estado);
+                startActivity(intent);
                 finish();
             }
         });

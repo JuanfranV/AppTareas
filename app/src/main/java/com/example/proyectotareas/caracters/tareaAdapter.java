@@ -48,6 +48,6 @@ public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> 
 
     @Override
     public int getItemCount(){
-        return listaTareas == null ? 0 : listaTareas.size();
+        return listaTareas.size();
     }
 }
