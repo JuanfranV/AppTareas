@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,12 +19,16 @@ import com.example.proyectotareas.caracters.tareaAdapter;
 import com.example.proyectotareas.model.agregarTareaModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerTareas;
     private Button buttonAgregar;
+    ArrayList<agregarTareaModel> listaTareas = new ArrayList<>();
+    RecyclerView recyclerTareas;
+    tareaAdapter adapter;
+
+    ActivityResultLauncher<Intent> agregarTareaLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,32 +42,34 @@ public class MainActivity extends AppCompatActivity {
 
 
         recyclerTareas = findViewById(R.id.recyclerTareas);
-        buttonAgregar = findViewById(R.id.buttonAñadir);
-
         recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
 
-        List<agregarTareaModel> listaTareas = new ArrayList<>();
+        buttonAgregar = findViewById(R.id.buttonAñadir);
 
-        tareaAdapter adapter = new tareaAdapter(listaTareas);
+        adapter = new tareaAdapter(listaTareas);
         recyclerTareas.setAdapter(adapter);
 
-        String titulo = getIntent().getStringExtra("titulo");
-        String descripcion = getIntent().getStringExtra("descripcion");
-        String estado = getIntent().getStringExtra("estado");
+        agregarTareaLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        String titulo = data.getStringExtra("titulo");
+                        String descripcion = data.getStringExtra("descripcion");
+                        String estado = data.getStringExtra("estado");
 
-        if (titulo != null && descripcion != null && estado != null) {
-            listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
-            adapter.notifyItemInserted(listaTareas.size() - 1);
-        }
-
-        recyclerTareas.setAdapter(new tareaAdapter(listaTareas));
+                        if (titulo != null && descripcion != null && estado != null) {
+                            listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
         buttonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AgregarTareaActivity.class);
-                startActivity(intent);
-                finish();
+                agregarTareaLauncher.launch(intent);
             }
         });
     }

@@ -42,6 +42,20 @@ public class AgregarTareaActivity extends AppCompatActivity {
         buttonCancelar = findViewById(R.id.buttonCancelar);
 
 
+        chBoCompletado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chBoPendiante.setChecked(false);
+            }
+        });
+
+        chBoPendiante.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chBoCompletado.setChecked(false);
+            }
+        });
+
         buttonGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,14 +63,22 @@ public class AgregarTareaActivity extends AppCompatActivity {
                 String descripcion = edTeDescripcion.getText().toString();
                 String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiante.isChecked() ? "Pendiente" : "Ninguno";
 
-                Intent intent = new Intent(AgregarTareaActivity.this, MainActivity.class);
+                Intent intent = new Intent();
                 intent.putExtra("titulo", titulo);
                 intent.putExtra("descripcion", descripcion);
                 intent.putExtra("estado", estado);
-                startActivity(intent);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
+
+        buttonCancelar.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                finish();
+            }
+        });
+
 
 
     }
