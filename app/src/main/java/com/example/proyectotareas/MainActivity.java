@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttonAgregar = findViewById(R.id.buttonAñadir);
 
-        adapter = new tareaAdapter(listaTareas);
+        adapter = new tareaAdapter(this, listaTareas);
         recyclerTareas.setAdapter(adapter);
 
         agregarTareaLauncher = registerForActivityResult(

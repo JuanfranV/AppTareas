@@ -1,5 +1,7 @@
 package com.example.proyectotareas.caracters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proyectotareas.EditarTareaActivity;
 import com.example.proyectotareas.R;
 import com.example.proyectotareas.model.agregarTareaModel;
 
 import java.util.List;
 
 public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> {
-    private static List<agregarTareaModel> listaTareas;
+    private List<agregarTareaModel> listaTareas;
+    private Context context;
 
-    public tareaAdapter(List<agregarTareaModel> listaTareas){
+    public tareaAdapter(Context context,List<agregarTareaModel> listaTareas){
+        this.context = context;
         this.listaTareas = listaTareas;
     }
 
@@ -44,7 +49,15 @@ public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> 
         holder.teViNombre.setText("Nombre: " + agregarTareaModel.getNombre());
         holder.teVidescripcion.setText("Descripción: " + agregarTareaModel.getDescripcion());
         holder.teViEstado.setText("estado: " + agregarTareaModel.getCompletadoPendiente());
-    }
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, EditarTareaActivity.class);
+            intent.putExtra("titulo", agregarTareaModel.getNombre());
+            intent.putExtra("descripcion", agregarTareaModel.getDescripcion());
+            intent.putExtra("estado", agregarTareaModel.getCompletadoPendiente());
+            context.startActivity(intent);
+        });
+        }
 
     @Override
     public int getItemCount(){
