@@ -18,7 +18,7 @@ public class AgregarTareaActivity extends AppCompatActivity {
 
     EditText edTeTitulo;
     EditText edTeDescripcion;
-    CheckBox chBoPendiante;
+    CheckBox chBoPendiente;
     CheckBox chBoCompletado;
     Button buttonGuardar;
     Button buttonCancelar;
@@ -37,7 +37,7 @@ public class AgregarTareaActivity extends AppCompatActivity {
         edTeTitulo = findViewById(R.id.edTeTitulo);
         edTeDescripcion = findViewById(R.id.edTeDescripcion);
         chBoCompletado = findViewById(R.id.chBoCompletado);
-        chBoPendiante = findViewById(R.id.chBoPendiente);
+        chBoPendiente = findViewById(R.id.chBoPendiente);
         buttonGuardar = findViewById(R.id.buttonGuardar);
         buttonCancelar = findViewById(R.id.buttonCancelar);
 
@@ -45,11 +45,11 @@ public class AgregarTareaActivity extends AppCompatActivity {
         chBoCompletado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chBoPendiante.setChecked(false);
+                chBoPendiente.setChecked(false);
             }
         });
 
-        chBoPendiante.setOnClickListener(new View.OnClickListener() {
+        chBoPendiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chBoCompletado.setChecked(false);
@@ -61,7 +61,7 @@ public class AgregarTareaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String titulo = edTeTitulo.getText().toString();
                 String descripcion = edTeDescripcion.getText().toString();
-                String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiante.isChecked() ? "Pendiente" : "Ninguno";
+                String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiente.isChecked() ? "Pendiente" : "Ninguno";
 
                 Intent intent = new Intent();
                 intent.putExtra("titulo", titulo);

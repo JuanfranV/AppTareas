@@ -26,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<agregarTareaModel> listaTareas = new ArrayList<>();
     RecyclerView recyclerTareas;
     tareaAdapter adapter;
-
-    ActivityResultLauncher<Intent> agregarTareaLauncher;
+    public ActivityResultLauncher<Intent> agregarTareaLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +53,30 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Intent data = result.getData();
-                        String titulo = data.getStringExtra("titulo");
-                        String descripcion = data.getStringExtra("descripcion");
-                        String estado = data.getStringExtra("estado");
+                        String accion = data.getStringExtra("accion");
+                        int posicion = data.getIntExtra("posicion", -1);
 
-                        if (titulo != null && descripcion != null && estado != null) {
-                            listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
-                            adapter.notifyDataSetChanged();
+
+                        if ("eliminar".equals(accion) && posicion != -1) {
+                            listaTareas.remove(posicion);
+                            adapter.notifyItemRemoved(posicion);
+                        } else {
+                            String titulo = data.getStringExtra("titulo");
+                            String descripcion = data.getStringExtra("descripcion");
+                            String estado = data.getStringExtra("estado");
+
+                            if (titulo != null && descripcion != null && estado != null) {
+                                if (posicion != -1) {
+                                    agregarTareaModel tarea = listaTareas.get(posicion);
+                                    tarea.setNombre(titulo);
+                                    tarea.setDescripcion(descripcion);
+                                    tarea.setCompletadoPendiente(estado);
+                                    adapter.notifyItemChanged(posicion);
+                                }else {
+                                    listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
+                                    adapter.notifyItemInserted(listaTareas.size() - 1);
+                                }
+                            }
                         }
                     }
                 });

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyectotareas.EditarTareaActivity;
+import com.example.proyectotareas.MainActivity;
 import com.example.proyectotareas.R;
 import com.example.proyectotareas.model.agregarTareaModel;
 
@@ -55,8 +56,10 @@ public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> 
             intent.putExtra("titulo", agregarTareaModel.getNombre());
             intent.putExtra("descripcion", agregarTareaModel.getDescripcion());
             intent.putExtra("estado", agregarTareaModel.getCompletadoPendiente());
-            context.startActivity(intent);
-        });
+            intent.putExtra("posicion", position);
+            if (context instanceof MainActivity) {
+                ((MainActivity) context).agregarTareaLauncher.launch(intent);
+            }        });
         }
 
     @Override
