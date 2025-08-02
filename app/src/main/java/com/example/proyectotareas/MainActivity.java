@@ -1,6 +1,7 @@
 package com.example.proyectotareas;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -98,5 +99,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, fotoActivity.class);
             startActivity(intent);
         });
+
+        String imageUriString = getIntent().getStringExtra("imagenUri");
+        if (imageUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
+            imViFoto.setImageURI(imageUri);
+        }
     }
 }
