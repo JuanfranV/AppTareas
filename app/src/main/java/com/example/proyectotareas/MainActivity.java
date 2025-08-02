@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<agregarTareaModel> listaTareas = new ArrayList<>();
     RecyclerView recyclerTareas;
     tareaAdapter adapter;
+    ImageView imViFoto;
     public ActivityResultLauncher<Intent> agregarTareaLauncher;
 
     @Override
@@ -87,6 +90,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AgregarTareaActivity.class);
                 agregarTareaLauncher.launch(intent);
             }
+        });
+
+        imViFoto = findViewById(R.id.imViFoto);
+
+        imViFoto.setOnClickListener( view ->{
+            Intent intent = new Intent(MainActivity.this, fotoActivity.class);
+            startActivity(intent);
         });
     }
 }

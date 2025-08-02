@@ -22,13 +22,14 @@
             android:id="@+id/teViNuevaTarea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="56dp"
             android:background="@drawable/fondo_redondeado"
             android:padding="10dp"
             android:text="Mis tareas"
             android:textColor="@android:color/white"
             android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,6 +72,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.652"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imViFoto"
+            android:layout_width="84dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="56dp"
+            android:clickable="true"
+            android:contentDescription="Foto de perfil"
+            app:layout_constraintEnd_toStartOf="@+id/teViNuevaTarea"
+            app:layout_constraintHorizontal_bias="0.48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/alert_light_frame" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

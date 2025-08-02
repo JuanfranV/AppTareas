@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoTareas">
         <activity
+            android:name=".fotoActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditarTareaActivity"
             android:exported="false" />
         <activity
