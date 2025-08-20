@@ -22,14 +22,14 @@
             android:id="@+id/teViNuevaTarea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/fondo_redondeado"
             android:padding="10dp"
             android:text="Mis tareas"
             android:textColor="@android:color/white"
             android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintHorizontal_bias="0.754"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,16 +46,16 @@
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/recyclerTareas"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.483"
             app:layout_constraintStart_toEndOf="@+id/buttonAñadir"
-            app:layout_constraintTop_toBottomOf="@+id/teViNuevaTarea" />
+            app:layout_constraintTop_toBottomOf="@+id/teViClima"
+            app:layout_constraintVertical_bias="0.924" />
 
         <Button
             android:id="@+id/buttonAñadir"
             android:layout_width="76dp"
             android:layout_height="78dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="80dp"
             android:text="+"
             android:textSize="40sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
             android:id="@+id/imViFoto"
             android:layout_width="84dp"
             android:layout_height="72dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="16dp"
             android:clickable="true"
             android:contentDescription="Foto de perfil"
             app:layout_constraintEnd_toStartOf="@+id/teViNuevaTarea"
@@ -85,6 +85,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/alert_light_frame" />
+
+        <TextView
+            android:id="@+id/teViClima"
+            android:layout_width="320dp"
+            android:layout_height="65dp"
+            android:layout_margin="20dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/fondo_redondeado"
+            android:gravity="center"
+            android:text="Cargando clima..."
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/teViNuevaTarea" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

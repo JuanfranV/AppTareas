@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,8 +19,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.proyectotareas.caracters.tareaAdapter;
 import com.example.proyectotareas.model.agregarTareaModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -31,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     tareaAdapter adapter;
     ImageView imViFoto;
     public ActivityResultLauncher<Intent> agregarTareaLauncher;
+    TextView txtClima;
+    String API_KEY = "**TOKEN**";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        txtClima = findViewById(R.id.teViClima);
+        obtenerClima("Guatemala");
 
         recyclerTareas = findViewById(R.id.recyclerTareas);
         recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
@@ -105,5 +118,31 @@ public class MainActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             imViFoto.setImageURI(imageUri);
         }
+    }
+
+    private void obtenerClima(String ciudad) {
+        String url = "https://api.openweathermap.org/data/2.5/weather?q="
+                + ciudad + "&appid=" + API_KEY + "&units=metric&lang=es";
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONObject main = response.getJSONObject("main");
+                        double temp = main.getDouble("temp");
+
+                        JSONArray weather = response.getJSONArray("weather");
+                        String descripcion = weather.getJSONObject(0).getString("description");
+
+                        txtClima.setText("Clima en " + ciudad + ":\n" + temp + "°C, " + descripcion);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> txtClima.setText("Error: " + error.getMessage()));
+
+        queue.add(request);
     }
 }

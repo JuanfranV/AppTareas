@@ -44,14 +44,14 @@
 
         <TextView
             android:id="@+id/teViTitulo"
-            android:layout_width="318dp"
-            android:layout_height="66dp"
+            android:layout_width="320dp"
+            android:layout_height="49dp"
+            android:background="@drawable/fondo_redondeado"
             android:inputType="textMultiLine"
             android:singleLine="false"
             android:text="Esperando..."
             android:textColor="@color/white"
             android:textSize="23sp"
-            android:background="@drawable/fondo_redondeado"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.318"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
         <TextView
             android:id="@+id/teViEstado"
             android:layout_width="318dp"
-            android:layout_height="55dp"
+            android:layout_height="50dp"
             android:inputType="textMultiLine"
             android:singleLine="false"
             android:text="Esperando..."
@@ -75,15 +75,15 @@
 
         <TextView
             android:id="@+id/teViDescripcion"
-            android:layout_width="318dp"
-            android:layout_height="82dp"
+            android:layout_width="313dp"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_redondeado"
             android:inputType="textMultiLine"
             android:singleLine="false"
             android:text="Esperando..."
             android:textColor="@color/white"
             android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@drawable/fondo_redondeado"
             app:layout_constraintHorizontal_bias="0.318"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teViDescripcionN" />
@@ -181,12 +181,12 @@
             android:id="@+id/buttonGuardar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
-            android:text="Guardar"
+            android:layout_marginBottom="64dp"
             android:background="@drawable/fondo_redondeado"
+            android:text="Guardar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonCancelar"
-            app:layout_constraintHorizontal_bias="0.842"
+            app:layout_constraintHorizontal_bias="0.756"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
@@ -206,8 +206,8 @@
             android:id="@+id/buttonBorrar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="28dp"
+            android:layout_marginEnd="64dp"
+            android:layout_marginBottom="64dp"
             android:backgroundTint="#FF0000"
             android:text="Borrar"
             app:layout_constraintBottom_toBottomOf="parent"
