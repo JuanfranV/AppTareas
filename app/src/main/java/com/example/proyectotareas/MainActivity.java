@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imViFoto;
     public ActivityResultLauncher<Intent> agregarTareaLauncher;
     TextView txtClima;
-    String API_KEY = "**TOKEN**";
+    String API_KEY = "83f25894f650cbdafe1f6649c9b74652";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
