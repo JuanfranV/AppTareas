@@ -13,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.proyectotareas.caracters.AnalyticsHelper;
+
 
 public class AgregarTareaActivity extends AppCompatActivity {
 
@@ -68,6 +70,7 @@ public class AgregarTareaActivity extends AppCompatActivity {
                 intent.putExtra("descripcion", descripcion);
                 intent.putExtra("estado", estado);
                 setResult(RESULT_OK, intent);
+                AnalyticsHelper.logCreateTask(titulo);
                 finish();
             }
         });

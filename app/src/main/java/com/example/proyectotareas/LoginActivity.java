@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.proyectotareas.caracters.AnalyticsHelper;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edTEUser;
@@ -17,11 +20,16 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonRegister;
     private DBHelper db;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         db = new DBHelper(this);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
         edTEUser = findViewById(R.id.etUser);
         edTEPass = findViewById(R.id.etPassword);
@@ -50,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             boolean ok = db.checklogin(user, passChar);
             if(ok){
+                AnalyticsHelper.logLogin(user);
                 Toast.makeText(this, "Bienvenido ", Toast.LENGTH_LONG).show();
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 i.putExtra("username", user);
@@ -58,10 +67,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         }catch (Exception e){
+            AnalyticsHelper.logLoginFailed(e.getMessage());
             Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
 
-        }finally {
-            java.util.Arrays.fill(passChar, '\u0000');
+        }catch (Error e){
+            AnalyticsHelper.logLoginFailed(e.getMessage());
+            Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
         }
     }
 }

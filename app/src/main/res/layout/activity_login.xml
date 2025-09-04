@@ -23,8 +23,8 @@
     <EditText
         android:id="@+id/etUser"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="username"
+        android:layout_height="50dp"
+        android:hint="Usuario"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:backgroundTint="@color/white"/>
@@ -32,26 +32,27 @@
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="password"
+        android:layout_height="50dp"
+        android:hint="Contraseña"
         android:inputType="textPassword"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:backgroundTint="@color/white"
+        android:layout_marginTop="10dp"
         />
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Iniciar sesión"
         android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Registrarse"
         android:layout_marginTop="10dp" />
 
 </LinearLayout>

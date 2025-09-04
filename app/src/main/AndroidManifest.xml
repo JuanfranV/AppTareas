@@ -4,9 +4,10 @@
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".caracters.MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,14 +16,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoTareas">
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity"
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".fotoActivity"
@@ -33,10 +38,6 @@
         <activity
             android:name=".AgregarTareaActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"/>
-
     </application>
 
 </manifest>

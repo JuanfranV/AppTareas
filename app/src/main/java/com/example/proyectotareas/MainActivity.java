@@ -23,13 +23,20 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.proyectotareas.caracters.AnalyticsHelper;
 import com.example.proyectotareas.caracters.tareaAdapter;
 import com.example.proyectotareas.model.agregarTareaModel;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.HttpMetric;
+import com.google.firebase.perf.metrics.Trace;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -118,7 +125,16 @@ public class MainActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             imViFoto.setImageURI(imageUri);
         }
+
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AnalyticsHelper.logListTasks();
+    }
+
 
     private void obtenerClima(String ciudad) {
         String url = "https://api.openweathermap.org/data/2.5/weather?q="
@@ -137,12 +153,83 @@ public class MainActivity extends AppCompatActivity {
 
                         txtClima.setText("Clima en " + ciudad + ":\n" + temp + "°C, " + descripcion);
 
+                        AnalyticsHelper.logApiCallSuccess(url);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 },
-                error -> txtClima.setText("Error: " + error.getMessage()));
+                error -> {
+                    txtClima.setText("Error: " + error.getMessage());
+                    AnalyticsHelper.logApiCallError(url, error.getMessage());
+                });
+
+
+
 
         queue.add(request);
+
+
+        // Crashlytics
+
+        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+        crashlytics.setCustomKey("screen", "MainActivity");
+
+        Button buttonCapturar = findViewById(R.id.buttonCapturar);
+
+        buttonCapturar.setOnClickListener( v -> {
+            try {
+                int resultado = 10 / 0;
+            } catch (Exception e) {
+                crashlytics.recordException(e);
+            }
+        });
+
+
+
+
+
+
+
+
+
     }
+
+    private void loginTrace() {
+        final String url = "https://httpbin.org/delay/1";
+
+        Trace t = FirebasePerformance.getInstance().newTrace("login_trace");
+        t.start();
+        t.putAttribute("screen", "MainActivity");
+
+        HttpMetric m = FirebasePerformance.getInstance().newHttpMetric(url, FirebasePerformance.HttpMethod.GET);
+        m.start();
+
+        new Thread(() -> {
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                int code = connection.getResponseCode();
+                m.setHttpResponseCode(code);
+
+                int len = connection.getContentLength();
+                if (len > 0) {
+                    m.setResponsePayloadSize(len);
+                }
+                String ct = connection.getHeaderField("Content-Type");
+                if (ct != null) {
+                    m.setResponseContentType(ct);
+                }
+            } catch (Exception e) {
+
+            }
+        });
+    }
+
 }
+
+
+

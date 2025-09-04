@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.proyectotareas.caracters.AnalyticsHelper;
+
 public class EditarTareaActivity extends AppCompatActivity {
 
     TextView teViTitulo;
@@ -82,6 +84,7 @@ public class EditarTareaActivity extends AppCompatActivity {
                     resultadoIntent.putExtra("estado", estado);
                     resultadoIntent.putExtra("posicion", getIntent().getIntExtra("posicion", -1));
                     setResult(RESULT_OK, resultadoIntent);
+                    AnalyticsHelper.logCompleteTask(teViTitulo.getText().toString());
                     finish();
                 }
             });
@@ -98,6 +101,7 @@ public class EditarTareaActivity extends AppCompatActivity {
                 resultadoIntent.putExtra("accion", "eliminar");
                 resultadoIntent.putExtra("posicion", getIntent().getIntExtra("posicion", -1));
                 setResult(RESULT_OK, resultadoIntent);
+                AnalyticsHelper.logDeleteTask(teViTitulo.getText().toString());
                 finish();
     
             });

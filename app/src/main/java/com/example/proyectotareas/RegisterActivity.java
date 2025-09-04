@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.proyectotareas.caracters.AnalyticsHelper;
+
 public class RegisterActivity extends AppCompatActivity {
     EditText edTEUser;
     EditText edTEPass;
@@ -62,9 +64,11 @@ public class RegisterActivity extends AppCompatActivity {
             long id = db.insertUser(user, pass.toCharArray());
 
             if (id > 0) {
+                AnalyticsHelper.logLogin(user);
                 Toast.makeText(this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
+                AnalyticsHelper.logLoginFailed(user);
                 Toast.makeText(this, "Error al crear el usuario", Toast.LENGTH_LONG).show();
             }
 
