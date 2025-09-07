@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.proyectotareas.caracters.AnalyticsHelper;
+import com.example.proyectotareas.caracters.AppLoger;
+import com.example.proyectotareas.caracters.MyApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class LoginActivity extends AppCompatActivity {
@@ -50,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
         String user = edTEUser.getText().toString().trim();
         char[] passChar = edTEPass.getText().toString().toCharArray();
 
+        AppLoger.d("LoginActivity", "Intentando login con usuario: " + user);
+
+
         if(user.isEmpty() || passChar.length==0){
             Toast.makeText(this, "Usuario y contraseña son obligatorios", Toast.LENGTH_SHORT).show();
             return;
@@ -58,6 +63,10 @@ public class LoginActivity extends AppCompatActivity {
         try {
             boolean ok = db.checklogin(user, passChar);
             if(ok){
+                Bundle params = new Bundle();
+                params.putString("username", user);
+                MyApp.logEvent("login_success", params, this);
+                AppLoger.i("LoginActivity", "Login exitoso para usuario: " + user);
                 AnalyticsHelper.logLogin(user);
                 Toast.makeText(this, "Bienvenido ", Toast.LENGTH_LONG).show();
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
@@ -67,12 +76,13 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         }catch (Exception e){
+            Bundle params = new Bundle();
+            params.putString("username", user);
+            MyApp.logEvent("login_failed", params, this);
+        AppLoger.w("LoginActivity", "Login fallido para usuario: " + user);
             AnalyticsHelper.logLoginFailed(e.getMessage());
             Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
 
-        }catch (Error e){
-            AnalyticsHelper.logLoginFailed(e.getMessage());
-            Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
         }
     }
 }

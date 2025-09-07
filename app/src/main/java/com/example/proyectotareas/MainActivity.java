@@ -24,6 +24,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.proyectotareas.caracters.AnalyticsHelper;
+import com.example.proyectotareas.caracters.AppLoger;
+import com.example.proyectotareas.caracters.MyApp;
 import com.example.proyectotareas.caracters.tareaAdapter;
 import com.example.proyectotareas.model.agregarTareaModel;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         if ("eliminar".equals(accion) && posicion != -1) {
+                            MyApp.logEvent("task_deleted", null, this);
                             listaTareas.remove(posicion);
                             adapter.notifyItemRemoved(posicion);
                         } else {
@@ -91,12 +94,15 @@ public class MainActivity extends AppCompatActivity {
 
                             if (titulo != null && descripcion != null && estado != null) {
                                 if (posicion != -1) {
-                                    agregarTareaModel tarea = listaTareas.get(posicion);
+                                    MyApp.logEvent("task_edited", null, this);
+                                        agregarTareaModel tarea = listaTareas.get(posicion);
                                     tarea.setNombre(titulo);
                                     tarea.setDescripcion(descripcion);
                                     tarea.setCompletadoPendiente(estado);
                                     adapter.notifyItemChanged(posicion);
                                 }else {
+                                    MyApp.logEvent("task_added", null, this);
+
                                     listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
                                     adapter.notifyItemInserted(listaTareas.size() - 1);
                                 }
@@ -125,6 +131,11 @@ public class MainActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             imViFoto.setImageURI(imageUri);
         }
+        Trace trace = FirebasePerformance.getInstance().newTrace("carga_lista_tareas");
+        trace.start();
+        recyclerTareas.setAdapter(adapter);
+        trace.stop();
+
 
 
     }
@@ -137,10 +148,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void obtenerClima(String ciudad) {
+
+        AppLoger.d("MainActivity", "Solicitando clima para ciudad: " + ciudad);
+
         String url = "https://api.openweathermap.org/data/2.5/weather?q="
                 + ciudad + "&appid=" + API_KEY + "&units=metric&lang=es";
 
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        Trace trace = FirebasePerformance.getInstance().newTrace("clima_request");
+        trace.start();
+
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -153,21 +171,24 @@ public class MainActivity extends AppCompatActivity {
 
                         txtClima.setText("Clima en " + ciudad + ":\n" + temp + "°C, " + descripcion);
 
+                        AppLoger.i("MainActivity", "Clima recibido: " + temp + "°C, " + descripcion);
+
                         AnalyticsHelper.logApiCallSuccess(url);
 
                     } catch (JSONException e) {
+                        AppLoger.w("MainActivity", "Respuesta inesperada de la API");
                         e.printStackTrace();
                     }
                 },
                 error -> {
                     txtClima.setText("Error: " + error.getMessage());
                     AnalyticsHelper.logApiCallError(url, error.getMessage());
+                    trace.putMetric("errors", 1);
+                    trace.stop();
+
                 });
-
-
-
-
         queue.add(request);
+
 
 
         // Crashlytics
@@ -184,10 +205,6 @@ public class MainActivity extends AppCompatActivity {
                 crashlytics.recordException(e);
             }
         });
-
-
-
-
 
 
 
@@ -224,12 +241,20 @@ public class MainActivity extends AppCompatActivity {
                     m.setResponseContentType(ct);
                 }
             } catch (Exception e) {
-
+                t.incrementMetric("error", 1);
+            }finally{
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                m.stop();
+                t.stop();
             }
-        });
+        }).start();
+
+
     }
 
-}
+    }
 
 
 

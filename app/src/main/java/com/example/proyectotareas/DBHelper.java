@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.proyectotareas.caracters.AppLoger;
+
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "login_demo.db";
     private static final int DB_VERSION = 1;
@@ -52,9 +54,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean userExists(String username) {
         SQLiteDatabase db = getReadableDatabase();
+        AppLoger.d("SQLiteHelper", "Verificando usuario en BD: " + username);
         try (Cursor c = db.rawQuery(
                 "SELECT 1 FROM users WHERE username = ? LIMIT 1",
                 new String[]{username.trim()})) {
+            AppLoger.d("SQLiteHelper", "Usuario encontrado en BD: " + username);
             return c.moveToFirst();
 
         }

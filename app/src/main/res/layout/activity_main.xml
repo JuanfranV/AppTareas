@@ -58,6 +58,7 @@
         android:id="@+id/recyclerTareas"
         android:layout_width="313dp"
         android:layout_height="388dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="48dp"
         android:background="@color/design_default_color_on_primary"
         android:padding="8dp"

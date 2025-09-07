@@ -17,6 +17,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.proyectotareas.caracters.MyApp;
+
 public class fotoActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_CODE = 101;
@@ -61,6 +63,8 @@ public class fotoActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     private void verificarPermisosYSeleccionarImagen() {
@@ -95,6 +99,11 @@ public class fotoActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             uriSeleccionada = data.getData();
             imViFoto.setImageURI(uriSeleccionada);
+
+            Bundle params = new Bundle();
+            params.putString("uri", uriSeleccionada.toString());
+            MyApp.logEvent("photo_selected", params, this);
+
         }
     }
 }
