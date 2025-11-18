@@ -43,6 +43,8 @@ public class AgregarTareaActivity extends AppCompatActivity {
         buttonGuardar = findViewById(R.id.buttonGuardar);
         buttonCancelar = findViewById(R.id.buttonCancelar);
 
+        chBoPendiente.setChecked(true);
+
 
         chBoCompletado.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +65,7 @@ public class AgregarTareaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String titulo = edTeTitulo.getText().toString();
                 String descripcion = edTeDescripcion.getText().toString();
-                String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiente.isChecked() ? "Pendiente" : "Ninguno";
+                String estado = chBoCompletado.isChecked() ? "Completado" : chBoPendiente.isChecked() ? "Pendiente": "Ninguno";
 
                 Intent intent = new Intent();
                 intent.putExtra("titulo", titulo);

@@ -1,41 +1,35 @@
 package com.example.proyectotareas.model;
-
 public class agregarTareaModel {
-
-    private String nombre;
+    private int id;
+    private String titulo;
     private String descripcion;
-    private String  completadoPendiente;
+    private String estado;
 
-    public agregarTareaModel(String nombre, String descripcion, String completadoPendiente) {
-        this.nombre = nombre;
+    public agregarTareaModel() {}
+
+    public agregarTareaModel(int id, String titulo, String descripcion, String estado) {
+        this.id = id;
+        this.titulo = titulo;
         this.descripcion = descripcion;
-        this.completadoPendiente = completadoPendiente;
+        this.estado = estado;
     }
 
-    public agregarTareaModel() {
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
+    public agregarTareaModel(String titulo, String descripcion, String estado) {
+        this.titulo = titulo;
         this.descripcion = descripcion;
+        this.estado = estado;
     }
 
-    public String getCompletadoPendiente() {
-        return completadoPendiente;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setCompletadoPendiente(String completadoPendiente) {
-        this.completadoPendiente = completadoPendiente;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }
+

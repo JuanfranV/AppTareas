@@ -47,15 +47,15 @@ public class tareaAdapter extends RecyclerView.Adapter<tareaAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull tareaAdapter.ViewHolder holder, int position){
         agregarTareaModel agregarTareaModel = listaTareas.get(position);
-        holder.teViNombre.setText("Nombre: " + agregarTareaModel.getNombre());
+        holder.teViNombre.setText("Nombre: " + agregarTareaModel.getTitulo());
         holder.teVidescripcion.setText("Descripción: " + agregarTareaModel.getDescripcion());
-        holder.teViEstado.setText("estado: " + agregarTareaModel.getCompletadoPendiente());
+        holder.teViEstado.setText("estado: " + agregarTareaModel.getEstado());
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, EditarTareaActivity.class);
-            intent.putExtra("titulo", agregarTareaModel.getNombre());
+            intent.putExtra("titulo", agregarTareaModel.getTitulo());
             intent.putExtra("descripcion", agregarTareaModel.getDescripcion());
-            intent.putExtra("estado", agregarTareaModel.getCompletadoPendiente());
+            intent.putExtra("estado", agregarTareaModel.getEstado());
             intent.putExtra("posicion", position);
             if (context instanceof MainActivity) {
                 ((MainActivity) context).agregarTareaLauncher.launch(intent);

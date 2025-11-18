@@ -1,12 +1,10 @@
-package com.example.proyectotareas;
+package com.example.proyectotareas.caracters;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.proyectotareas.caracters.AppLoger;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "login_demo.db";

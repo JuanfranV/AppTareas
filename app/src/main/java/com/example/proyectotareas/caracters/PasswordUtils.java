@@ -1,4 +1,4 @@
-package com.example.proyectotareas;
+package com.example.proyectotareas.caracters;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;

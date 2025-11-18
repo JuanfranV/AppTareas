@@ -14,7 +14,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.proyectotareas.caracters.AnalyticsHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EditarTareaActivity extends AppCompatActivity {
 
@@ -100,6 +107,7 @@ public class EditarTareaActivity extends AppCompatActivity {
                 Intent resultadoIntent = new Intent();
                 resultadoIntent.putExtra("accion", "eliminar");
                 resultadoIntent.putExtra("posicion", getIntent().getIntExtra("posicion", -1));
+                
                 setResult(RESULT_OK, resultadoIntent);
                 AnalyticsHelper.logDeleteTask(teViTitulo.getText().toString());
                 finish();
@@ -109,4 +117,7 @@ public class EditarTareaActivity extends AppCompatActivity {
 
 
     }
+
+
+
 }

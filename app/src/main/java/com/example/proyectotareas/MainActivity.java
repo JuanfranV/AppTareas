@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.proyectotareas.caracters.AnalyticsHelper;
 import com.example.proyectotareas.caracters.AppLoger;
@@ -50,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView imViFoto;
     public ActivityResultLauncher<Intent> agregarTareaLauncher;
     TextView txtClima;
-    String API_KEY = "";
+    String API_KEY = "08279d7fa577b4bc7025a401f440330d";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         adapter = new tareaAdapter(this, listaTareas);
         recyclerTareas.setAdapter(adapter);
 
+        // Carga las tareas desde la API de Render
+        obtenerTareasDesdeAPI();
+
         agregarTareaLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -82,8 +89,14 @@ public class MainActivity extends AppCompatActivity {
                         String accion = data.getStringExtra("accion");
                         int posicion = data.getIntExtra("posicion", -1);
 
+                        // BORRAR TAREA
 
                         if ("eliminar".equals(accion) && posicion != -1) {
+                            agregarTareaModel tarea = listaTareas.get(posicion);
+
+                            //LLAMADA A LA API
+                            eliminarTareaEnAPI(tarea.getId());
+
                             MyApp.logEvent("task_deleted", null, this);
                             listaTareas.remove(posicion);
                             adapter.notifyItemRemoved(posicion);
@@ -94,17 +107,23 @@ public class MainActivity extends AppCompatActivity {
 
                             if (titulo != null && descripcion != null && estado != null) {
                                 if (posicion != -1) {
+
+                                    // EDITAR TAREA
                                     MyApp.logEvent("task_edited", null, this);
-                                        agregarTareaModel tarea = listaTareas.get(posicion);
-                                    tarea.setNombre(titulo);
+                                    agregarTareaModel tarea = listaTareas.get(posicion);
+
+                                    //LLAMADA A LA API
+                                    actualizarTareaEnAPI(tarea.getId(), titulo, descripcion, estado);
+
+                                    tarea.setTitulo(titulo);
                                     tarea.setDescripcion(descripcion);
-                                    tarea.setCompletadoPendiente(estado);
+                                    tarea.setEstado(estado);
                                     adapter.notifyItemChanged(posicion);
                                 }else {
                                     MyApp.logEvent("task_added", null, this);
 
-                                    listaTareas.add(new agregarTareaModel(titulo, descripcion, estado));
-                                    adapter.notifyItemInserted(listaTareas.size() - 1);
+                                    // NUEVA TAREA
+                                    agregarTareaEnAPI(titulo, descripcion, estado);
                                 }
                             }
                         }
@@ -133,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Trace trace = FirebasePerformance.getInstance().newTrace("carga_lista_tareas");
         trace.start();
-        recyclerTareas.setAdapter(adapter);
         trace.stop();
 
 
@@ -189,72 +207,100 @@ public class MainActivity extends AppCompatActivity {
                 });
         queue.add(request);
 
-
-
-        // Crashlytics
-
-        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCustomKey("screen", "MainActivity");
-
-        Button buttonCapturar = findViewById(R.id.buttonCapturar);
-
-        buttonCapturar.setOnClickListener( v -> {
-            try {
-                int resultado = 10 / 0;
-            } catch (Exception e) {
-                crashlytics.recordException(e);
-            }
-        });
-
-
-
-
-
     }
 
-    private void loginTrace() {
-        final String url = "https://httpbin.org/delay/1";
+    private void obtenerTareasDesdeAPI() {
+        String url = "https://apitareas-u3nf.onrender.com/tareas";
 
-        Trace t = FirebasePerformance.getInstance().newTrace("login_trace");
-        t.start();
-        t.putAttribute("screen", "MainActivity");
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        HttpMetric m = FirebasePerformance.getInstance().newHttpMetric(url, FirebasePerformance.HttpMethod.GET);
-        m.start();
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    listaTareas.clear();
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject obj = response.getJSONObject(i);
+                            String titulo = obj.getString("titulo");
+                            String descripcion = obj.getString("descripcion");
+                            String estado = obj.getString("estado");
 
-        new Thread(() -> {
-            HttpURLConnection connection = null;
-            try {
-                connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
+                            int id = obj.getInt("id");
+                            listaTareas.add(new agregarTareaModel(id, titulo, descripcion, estado));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                },
+                error -> Toast.makeText(this, "Error al obtener tareas: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
 
-                int code = connection.getResponseCode();
-                m.setHttpResponseCode(code);
-
-                int len = connection.getContentLength();
-                if (len > 0) {
-                    m.setResponsePayloadSize(len);
-                }
-                String ct = connection.getHeaderField("Content-Type");
-                if (ct != null) {
-                    m.setResponseContentType(ct);
-                }
-            } catch (Exception e) {
-                t.incrementMetric("error", 1);
-            }finally{
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                m.stop();
-                t.stop();
-            }
-        }).start();
-
-
+        queue.add(request);
     }
 
+    private void agregarTareaEnAPI(String titulo, String descripcion, String estado) {
+        String url = "https://apitareas-u3nf.onrender.com/tareas";
+
+        JSONObject tarea = new JSONObject();
+        try {
+            tarea.put("titulo", titulo);
+            tarea.put("descripcion", descripcion);
+            tarea.put("estado", estado);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, tarea,
+                response -> {
+                    Toast.makeText(this, "Tarea agregada con éxito", Toast.LENGTH_SHORT).show();
+                    obtenerTareasDesdeAPI(); // refresca la lista
+                },
+                error -> Toast.makeText(this, "Error al agregar: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
     }
+
+    private void eliminarTareaEnAPI(int id) {
+        String url = "https://apitareas-u3nf.onrender.com/tareas/" + id;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.DELETE, url,
+                response -> obtenerTareasDesdeAPI(),
+                error -> Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
+    }
+
+    private void actualizarTareaEnAPI(int id, String titulo, String descripcion, String estado) {
+        String url = "https://apitareas-u3nf.onrender.com/tareas/" + id;
+
+        JSONObject tarea = new JSONObject();
+        try {
+            tarea.put("titulo", titulo);
+            tarea.put("descripcion", descripcion);
+            tarea.put("estado", estado);
+        } catch (JSONException e) { return; }
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, tarea,
+                response -> obtenerTareasDesdeAPI(),
+                error -> Toast.makeText(this, "Error al actualizar", Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
+    }
+
+
+
+
+
+}
 
 
 

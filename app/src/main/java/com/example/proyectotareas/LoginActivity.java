@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.proyectotareas.caracters.AnalyticsHelper;
 import com.example.proyectotareas.caracters.AppLoger;
+import com.example.proyectotareas.caracters.DBHelper;
 import com.example.proyectotareas.caracters.MyApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 

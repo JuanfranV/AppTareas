@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.proyectotareas.caracters.AnalyticsHelper;
+import com.example.proyectotareas.caracters.DBHelper;
 import com.example.proyectotareas.caracters.MyApp;
 
 public class RegisterActivity extends AppCompatActivity {
