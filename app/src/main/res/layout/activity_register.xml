@@ -64,6 +64,15 @@
         />
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonRegisterG"
+        android:text="Registrarse con Google"
+        android:backgroundTint="#4285F4"
+        android:textColor="#FFF"/>
+
+
+    <Button
         android:id="@+id/btnVolver"
         android:layout_width="match_parent"
         android:layout_height="50dp"

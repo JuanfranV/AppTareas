@@ -9,19 +9,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.proyectotareas.caracters.AnalyticsHelper;
-import com.example.proyectotareas.caracters.AppLoger;
-import com.example.proyectotareas.caracters.DBHelper;
-import com.example.proyectotareas.caracters.MyApp;
+import com.example.proyectotareas.caracters.ApiClient;
+import com.example.proyectotareas.caracters.ApiService;
+import com.example.proyectotareas.model.UsuarioModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText edTEUser;
-    private EditText edTEPass;
-    private Button buttonLogin;
+    private EditText edUser, edPass;
+    private Button buttonLogin, buttonGoogle;
+
+    private FirebaseAuth auth;
+    private ApiService api;
+
     private Button buttonRegister;
-    private DBHelper db;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -29,19 +35,24 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        db = new DBHelper(this);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+        auth = FirebaseAuth.getInstance();
+        api = ApiClient.getClient().create(ApiService.class);
 
-        edTEUser = findViewById(R.id.etUser);
-        edTEPass = findViewById(R.id.etPassword);
-        edTEPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        edUser = findViewById(R.id.etUser);
+        edPass = findViewById(R.id.etPassword);
+        edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        buttonGoogle = findViewById(R.id.buttonLoginG);
 
         buttonLogin = findViewById(R.id.btnLogin);
         buttonRegister = findViewById(R.id.btnRegister);
 
-        buttonLogin.setOnClickListener(v -> doLogin());
+
+        buttonLogin.setOnClickListener(v -> loginEmail());
 
         buttonRegister.setOnClickListener(v -> {
             Intent i = new Intent(this, RegisterActivity.class);
@@ -49,41 +60,32 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void doLogin(){
-        String user = edTEUser.getText().toString().trim();
-        char[] passChar = edTEPass.getText().toString().toCharArray();
+    private void loginEmail(){
+        String email = edUser.getText().toString();
+        String pass = edPass.getText().toString();
 
-        AppLoger.d("LoginActivity", "Intentando login con usuario: " + user);
+        auth.signInWithEmailAndPassword(email, pass)
+                .addOnSuccessListener(r -> llamarApiLogin(email, pass))
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Firebase: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
 
-
-        if(user.isEmpty() || passChar.length==0){
-            Toast.makeText(this, "Usuario y contraseña son obligatorios", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            boolean ok = db.checklogin(user, passChar);
-            if(ok){
-                Bundle params = new Bundle();
-                params.putString("username", user);
-                MyApp.logEvent("login_success", params, this);
-                AppLoger.i("LoginActivity", "Login exitoso para usuario: " + user);
-                AnalyticsHelper.logLogin(user);
-                Toast.makeText(this, "Bienvenido ", Toast.LENGTH_LONG).show();
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                i.putExtra("username", user);
-                startActivity(i);
-                finish();
-
-            }
-        }catch (Exception e){
-            Bundle params = new Bundle();
-            params.putString("username", user);
-            MyApp.logEvent("login_failed", params, this);
-        AppLoger.w("LoginActivity", "Login fallido para usuario: " + user);
-            AnalyticsHelper.logLoginFailed(e.getMessage());
-            Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
-
-        }
     }
+
+    private void llamarApiLogin(String email, String pass) {
+        UsuarioModel user = new UsuarioModel(email, pass);
+
+        api.login(user).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Toast.makeText(LoginActivity.this, response.body(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Error API", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

@@ -8,8 +8,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.proyectotareas.caracters.AnalyticsHelper;
-import com.example.proyectotareas.caracters.DBHelper;
+import com.example.proyectotareas.caracters.ApiClient;
+import com.example.proyectotareas.caracters.ApiService;
 import com.example.proyectotareas.caracters.MyApp;
+import com.example.proyectotareas.model.UsuarioModel;
+import com.google.firebase.auth.FirebaseAuth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText edTEUser;
@@ -17,12 +24,14 @@ public class RegisterActivity extends AppCompatActivity {
     EditText edTEConfirm;
     private Button buttonCreate;
     private Button buttonBack;
-    private DBHelper db;
+
+    private FirebaseAuth auth;
+    private ApiService api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        db = new DBHelper(this);
 
         edTEUser = findViewById(R.id.etUserReg);
         edTEPass = findViewById(R.id.etPassReg);
@@ -31,6 +40,9 @@ public class RegisterActivity extends AppCompatActivity {
         edTEPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         edTEConfirm.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
+        auth = FirebaseAuth.getInstance();
+        api = ApiClient.getClient().create(ApiService.class);
+
         buttonCreate = findViewById(R.id.btnCrearCuenta);
         buttonBack = findViewById(R.id.btnVolver);
 
@@ -38,51 +50,38 @@ public class RegisterActivity extends AppCompatActivity {
         buttonBack.setOnClickListener(v -> finish());
     }
     private void doRegister(){
-        String user = edTEUser.getText().toString().trim();
+        String email = edTEUser.getText().toString();
         String pass = edTEPass.getText().toString();
         String confirm = edTEConfirm.getText().toString();
 
-        if(user.isEmpty() || pass.isEmpty() || confirm.isEmpty()){
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if(!pass.equals(confirm)){
+        if (!pass.equals(confirm)) {
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(user.length() < 3 || pass.length() < 6){
-            Toast.makeText(this, "El nombre de usuario debe tener al menos 3 caracteres y la contraseña al menos 6", Toast.LENGTH_LONG).show();
-            return;
-        }
+        auth.createUserWithEmailAndPassword(email, pass)
+                .addOnSuccessListener(r -> llamarApiRegistro(email, pass))
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Firebase: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
 
-        try {
-            if (db.userExists(user)) {
-                Toast.makeText(this, "El nombre de usuario ya existe", Toast.LENGTH_SHORT).show();
-                return;
-            }
+    private void llamarApiRegistro(String email, String pass) {
+        UsuarioModel user = new UsuarioModel(email, pass);
 
-            long id = db.insertUser(user, pass.toCharArray());
-
-            if (id > 0) {
-                Bundle params = new Bundle();
-                params.putString("username", user);
-                MyApp.logEvent("register_success", params, this);
-
-                AnalyticsHelper.logLogin(user);
-                Toast.makeText(this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
+        api.registrar(user).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Toast.makeText(RegisterActivity.this, response.body(), Toast.LENGTH_SHORT).show();
                 finish();
-            } else {
-                MyApp.logEvent("register_failed", null, this);
-                AnalyticsHelper.logLoginFailed(user);
-                Toast.makeText(this, "Error al crear el usuario", Toast.LENGTH_LONG).show();
             }
 
-        } catch (Exception  e){
-            MyApp.logEvent("register_failed", null, this);
-            Toast.makeText(this, "Error al crear el usuario", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Error API", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-    }
-    }
+
+}

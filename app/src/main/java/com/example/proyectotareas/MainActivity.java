@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
                                     // NUEVA TAREA
                                     agregarTareaEnAPI(titulo, descripcion, estado);
+                                    adapter.notifyItemInserted(listaTareas.size() - 1);
+
                                 }
                             }
                         }
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void obtenerTareasDesdeAPI() {
-        String url = "https://apitareas-u3nf.onrender.com/tareas";
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -239,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void agregarTareaEnAPI(String titulo, String descripcion, String estado) {
-        String url = "https://apitareas-u3nf.onrender.com/tareas";
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas";
 
         JSONObject tarea = new JSONObject();
         try {
@@ -264,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void eliminarTareaEnAPI(int id) {
-        String url = "https://apitareas-u3nf.onrender.com/tareas/" + id;
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas/" + id;
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void actualizarTareaEnAPI(int id, String titulo, String descripcion, String estado) {
-        String url = "https://apitareas-u3nf.onrender.com/tareas/" + id;
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas/" + id;
 
         JSONObject tarea = new JSONObject();
         try {
