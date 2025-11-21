@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "https://apitareas-u3nf.onrender.com/api/auten";
+    private static final String BASE_URL = "https://apitareas-u3nf.onrender.com/api/auten/";
 
     private static Retrofit retrofit;
 

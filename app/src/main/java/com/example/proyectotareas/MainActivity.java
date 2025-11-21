@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void obtenerTareasDesdeAPI() {
-        String url = "https://apitareas-u3nf.onrender.com/api/tareas";
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas/";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void agregarTareaEnAPI(String titulo, String descripcion, String estado) {
-        String url = "https://apitareas-u3nf.onrender.com/api/tareas";
+        String url = "https://apitareas-u3nf.onrender.com/api/tareas/";
 
         JSONObject tarea = new JSONObject();
         try {
