@@ -1,6 +1,8 @@
 package com.example.proyectotareas;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.Button;
@@ -72,14 +74,25 @@ public class RegisterActivity extends AppCompatActivity {
         api.registrar(user).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(RegisterActivity.this, response.body(), Toast.LENGTH_SHORT).show();
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(RegisterActivity.this, "Error en el servidor", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Toast.makeText(RegisterActivity.this, "Cuenta creada correctamente", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
                 finish();
             }
 
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "Error API", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Error API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 
