@@ -22,7 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText edTEUser;
     EditText edTEPass;
     EditText edTEConfirm;
-    private Button buttonCreate;
+    private Button buttonGoogle;
     private Button buttonBack;
 
     private FirebaseAuth auth;
@@ -43,10 +43,10 @@ public class RegisterActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         api = ApiClient.getClient().create(ApiService.class);
 
-        buttonCreate = findViewById(R.id.btnCrearCuenta);
+        buttonGoogle = findViewById(R.id.buttonRegisterG);
         buttonBack = findViewById(R.id.btnVolver);
 
-        buttonCreate.setOnClickListener(v -> doRegister());
+        buttonGoogle.setOnClickListener(v -> doRegister());
         buttonBack.setOnClickListener(v -> finish());
     }
     private void doRegister(){

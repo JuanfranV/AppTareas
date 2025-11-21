@@ -22,7 +22,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edUser, edPass;
-    private Button buttonLogin, buttonGoogle;
+    private Button buttonGoogle;
 
     private FirebaseAuth auth;
     private ApiService api;
@@ -48,11 +48,10 @@ public class LoginActivity extends AppCompatActivity {
 
         buttonGoogle = findViewById(R.id.buttonLoginG);
 
-        buttonLogin = findViewById(R.id.btnLogin);
         buttonRegister = findViewById(R.id.btnRegister);
 
 
-        buttonLogin.setOnClickListener(v -> loginEmail());
+        buttonGoogle.setOnClickListener(v -> loginEmail());
 
         buttonRegister.setOnClickListener(v -> {
             Intent i = new Intent(this, RegisterActivity.class);
